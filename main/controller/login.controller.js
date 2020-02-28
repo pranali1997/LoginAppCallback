@@ -12,7 +12,8 @@ exports.create = (req, res) => {
     const login = {
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password
+        password: req.body.password,
+        isPresent: req.body.isPresent
     };
 
     service.create(login, ((err, data) => {
@@ -42,7 +43,7 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req,res)=>{
 
-    service.findOne(req.params.loginId,((err,data)=>{
+    service.findOne({email: req.body.email},((err,data)=>{
         if(err){
             message: err.message || "some error has been occurred"
         }

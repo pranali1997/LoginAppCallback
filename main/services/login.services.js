@@ -9,6 +9,7 @@ module.exports={
         objLogin.name=login.name;
         objLogin.email=login.email;
         objLogin.password=login.password;
+        objLogin.present=login.present;
         console.log('object login model-------->',objLogin);
 
         objLogin.save().then(data => {
@@ -35,9 +36,9 @@ module.exports={
     findOne(data,callback){
         console.log(data);
         
-        Login.findById(data)
+        Login.find(data)
         .then(data=>{
-            console.log("login data------------>",data);            
+            return callback(null,data)           
         }).catch(err =>{
             return callback({message : "Error while retrieving note id"})
         })       

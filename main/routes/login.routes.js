@@ -6,5 +6,5 @@ module.exports= (app) =>{
 
     app.get('/login',login.findAll);
 
-    app.get('/login/:_Id',login.findOne);
+    app.get('/find',login.findOne);
 }
