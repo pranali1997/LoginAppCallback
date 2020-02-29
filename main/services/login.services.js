@@ -1,20 +1,21 @@
-const Login = require('../model/login.model')
+const Login = require('../model/login.model');
 // const express = require('express');
 // const jwt = require('jsonwebtoken');
 
 module.exports = {
 
     create(login, callback) {
-        console.log("body content----------->", login);
+        // console.log("body content----------->", login);
         const objLogin = new Login()
         objLogin.name = login.name;
+        check('login.email').isEmail;
         objLogin.email = login.email;
         objLogin.password = login.password;
         objLogin.present = login.present;
-        console.log('object login model-------->', objLogin);
+        // console.log('object login model-------->', objLogin);
 
         objLogin.save().then(data => {
-            console.log("after save--------->", data);
+            // console.log("after save--------->", data);
 
             return callback(null, data);
         }).catch(err => {
@@ -23,11 +24,9 @@ module.exports = {
     },
 
     findAll(data, callback) {
-        // console.log("content inside body----------->", data.email);
-
-        // console.log("login object model--------->", data);
-
         Login.find().then(data => {
+            console.log("find one data in services=======================>",data);
+            
             return callback(null, data)
         }).catch(err => {
             return callback({ message: "Error while retrieving login id" })
@@ -38,6 +37,8 @@ module.exports = {
         console.log(data);
         Login.findOne(data)
             .then(data => {
+                console.log("data in services password===============================>",data);
+                
                 return callback(null, data)
             }).catch(err => {
                 return callback({ message: "Error while retrieving note id" })

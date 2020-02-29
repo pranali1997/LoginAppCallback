@@ -1,21 +1,33 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs')
 
-exports.tokenFun = (userData, callback) => {
+module.exports = {
+    tokenFun(userData, callback) {
 
-    const secretKey = "secretKey";
-    login = {
-        userId: userData.id
-    };
-    console.log('login contains user id ================>',login);
-    
-    jwt.sign(login, secretKey, (err, token) => {
-        if (err) {
-            console.log("error has been occurred", err);
+        const secretKey = "secretKey";
+        login = {
+            userId: userData.id
         }
-        else {
-            console.log(token);
 
-            return callback(null, token)
-        }
-    });
+        jwt.sign(login, secretKey, (err, token) => {
+            if (err) {
+                console.log("error has been occurred", err);
+
+            }
+            else {
+                return callback(null, token)
+            }
+        });
+    },
+
+    decodePassword(userData, password, callback) {        
+        bcrypt.compare(userData, password, function (err,res) {            
+            if (!res) {
+                return callback("unsuccessful")
+            }            
+            return callback(null, password);
+
+        });
+
+    }
 }
