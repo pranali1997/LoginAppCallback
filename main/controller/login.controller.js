@@ -1,6 +1,11 @@
 const service = require('../services/login.services');
+const verify=require('../../verify.Token')
+const jwt=require('jsonwebtoken')
+const secretKey="secretKey";
 
-exports.create = (req, res) => {
+module.exports={
+
+    create(req, res) {
 
     if (!req.body.email) {
         return res.status(500).send({
@@ -23,13 +28,13 @@ exports.create = (req, res) => {
 
             })
         }
-        console.log("inside the controller",data);
+        console.log("inside the controller", data);
 
         res.json(data);
     }))
-}
+},
 
-exports.findAll = (req, res) => {
+findAll(req, res){
     service.findAll(req, ((err, data) => {
         if (err) {
             res.status(500).send({
@@ -37,16 +42,40 @@ exports.findAll = (req, res) => {
             })
         }
         res.send(data);
+        if(data){
+            this.findToken(data,callback);
+
+        }
     }))
 
-}
+},
 
-exports.findOne = (req,res)=>{
+findOne(req, res){
 
-    service.findOne({email: req.body.email},((err,data)=>{
-        if(err){
+    service.findOne({ email: req.body.email }, ((err, data) => {
+        if (err) {
             message: err.message || "some error has been occurred"
         }
-        res.send(data);
+        verify.tokenFun(data,(err,data)=>{
+            if(err){
+                console.log("something went wrong");
+            }
+        })
+        res.send(data +"valid token.......");
     }))
+},
+
+findToken(req, res){
+    jwt.verify(req.headers.token,secretKey,(err,data)=>{
+        if(err){
+            console.log("something went wrong.....");
+        }
+        else{
+            var tokenValue=req.headers.token;
+            var header=jwt.decode(tokenValue);
+            console.log(header.userId);
+            res.send(header);
+        }
+    })        
+}
 }
