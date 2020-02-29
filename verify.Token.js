@@ -11,7 +11,6 @@ exports.tokenFun = (userData, callback) => {
     jwt.sign(login, secretKey, (err, token) => {
         if (err) {
             console.log("error has been occurred", err);
-
         }
         else {
             console.log(token);

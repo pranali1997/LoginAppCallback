@@ -9,4 +9,7 @@ module.exports= (app) =>{
     app.get('/find',login.findOne);
 
     app.post('/find/token',login.findToken);
+
+    app.get('/findId',login.findOneId)
+
 }

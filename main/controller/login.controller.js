@@ -1,81 +1,105 @@
 const service = require('../services/login.services');
-const verify=require('../../verify.Token')
-const jwt=require('jsonwebtoken')
-const secretKey="secretKey";
+const verify = require('../../verify.Token')
+const jwt = require('jsonwebtoken')
+const secretKey = "secretKey";
 
-module.exports={
+module.exports = {
 
     create(req, res) {
 
-    if (!req.body.email) {
-        return res.status(500).send({
-            message: "login cannot be empty"
-        });
-    }
-    console.log("body content------->", req.body.email);
-
-    const login = {
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        isPresent: req.body.isPresent
-    };
-
-    service.create(login, ((err, data) => {
-        if (err) {
-            res.status(500).send({
-                message: err.message || "some error has been occurred"
-
-            })
+        if (!req.body.email) {
+            return res.status(500).send({
+                message: "login cannot be empty"
+            });
         }
-        console.log("inside the controller", data);
+        console.log("body content------->", req.body.email);
 
-        res.json(data);
-    }))
-},
+        const login = {
+            name: req.body.name,
+            email: req.body.email,
+            password: req.body.password,
+            isPresent: req.body.isPresent
+        };
 
-findAll(req, res){
-    service.findAll(req, ((err, data) => {
-        if (err) {
-            res.status(500).send({
-                message: err.message || "some error has been occurred \0o0/"
-            })
-        }
-        res.send(data);
-        if(data){
-            this.findToken(data,callback);
+        service.create(login, ((err, data) => {
+            if (err) {
+                res.status(500).send({
+                    message: err.message || "some error has been occurred"
 
-        }
-    }))
-
-},
-
-findOne(req, res){
-
-    service.findOne({ email: req.body.email }, ((err, data) => {
-        if (err) {
-            message: err.message || "some error has been occurred"
-        }
-        verify.tokenFun(data,(err,data)=>{
-            if(err){
-                console.log("something went wrong");
+                })
             }
-        })
-        res.send(data +"valid token.......");
-    }))
-},
+            console.log("inside the controller", data);
 
-findToken(req, res){
-    jwt.verify(req.headers.token,secretKey,(err,data)=>{
-        if(err){
-            console.log("something went wrong.....");
+            res.json(data);
+        }))
+    },
+
+    findAll(req, res) {
+        service.findAll(req, ((err, data) => {
+            if (err) {
+                res.status(500).send({
+                    message: err.message || "some error has been occurred \0o0/"
+                })
+            }
+            res.send(data);
+            if (data) {
+                this.findToken(data, callback);
+
+            }
+        }))
+
+    },
+
+    findOne(req, res) {
+        service.findOne({ email: req.body.email }, ((err, data) => {
+            if (err) {
+                message: err.message || "some error has been occurred"
+            }
+            verify.tokenFun(data, (err, data) => {
+                if (err) {
+                    console.log("something went wrong");
+                }
+            })
+            res.send(data + "valid token.......");
+        }))
+    },
+
+    findToken(req, res) {
+        jwt.verify(req.headers.token, secretKey, (err, data) => {
+            if (err) {
+                console.log("something went wrong.....");
+            }
+            else {
+                var tokenValue = req.headers.token;
+                var header = jwt.decode(tokenValue);
+                console.log(header.userId);
+
+                service.findOne(header.userId, ((err, data) => {
+                    if (err) {
+                        console.log("something went wrong........");
+                    }
+                    console.log("data in findOneId---------------->", data);
+
+                    res.send(data);
+                }))
+            }
         }
-        else{
-            var tokenValue=req.headers.token;
-            var header=jwt.decode(tokenValue);
-            console.log(header.userId);
-            res.send(header);
-        }
-    })        
-}
+        )
+    },
+
+    findOneId(req, res) {
+        service.findOneId(req.body._id, ((err, data) => {
+            if (err) {
+                message: err.message || "some error has been occurred"
+            }
+            verify.tokenFun(data, (err, data) => {
+                if (err) {
+                    console.log("something went wrong");
+                }
+            })
+            res.send(data + "valid token.......");
+        }))
+    }
+
+
 }

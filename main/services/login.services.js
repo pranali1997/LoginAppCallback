@@ -54,5 +54,15 @@ module.exports = {
                 return callback({ message: "Error while retrieving login id" })
             })
 
+    },
+
+    findOneId(data, callback) {
+        console.log(data);
+        Login.findById(data)
+            .then(data => {
+                return callback(null, data)
+            }).catch(err => {
+                return callback({ message: "Error while retrieving note id" })
+            })
     }
 }
